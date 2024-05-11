@@ -2,9 +2,11 @@ package com.svalero.hellodatabase.ui;
 
 import com.svalero.hellodatabase.db.Database;
 import com.svalero.hellodatabase.db.ProductDao;
+import com.svalero.hellodatabase.domain.Product;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -35,16 +37,16 @@ public class Menu {
             System.out.println("2. Registrar un producto");
             System.out.println("3. Modificar un producto");
             System.out.println("4. Eliminar un producto");
+            System.out.println("5. Buscar productos por precio");
             System.out.println("q. Desconectar");
             String choice = keyboard.nextLine();
 
             switch (choice) {
                 case "1":
-
+                    listProducts();
                     break;
                 case "2":
                     registerProduct();
-
                     break;
                 case "3":
 
@@ -52,6 +54,10 @@ public class Menu {
 
                 case "4":
                     deleteProduct();
+                    break;
+
+                case "5":
+
                     break;
 
                 case "q":
@@ -63,6 +69,16 @@ public class Menu {
 
     }
 
+    private void listProducts() {
+        ProductDao productDao = new ProductDao(database.getConnection());
+        try {
+            List<Product> allProducts = productDao.getAllProducts();
+            allProducts.forEach(product -> System.out.println(product.getName()));
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+        }
+    }
+
 
     private void registerProduct() {
         System.out.print("Nombre: ");
@@ -72,8 +88,8 @@ public class Menu {
 
         ProductDao productDao = new ProductDao(database.getConnection());
         try {
-            int affectedRows = productDao.registerProducts(name, price);
-            System.out.println("Filas afectadas: " + affectedRows);
+            boolean done = productDao.registerProducts(name, price);
+            System.out.println("Hecho: " + done);
         } catch (SQLIntegrityConstraintViolationException sqlicve) {
             System.out.print("El nombre del producto ya existe");
         } catch (SQLException sqle) {
