@@ -21,7 +21,7 @@ public class Menu {
     }
 
     public void showMenu() {
-        database = new Database("test", "test");
+        database = new Database("SYS", "Pass");
         try {
             database.connect();
         } catch (ClassNotFoundException cnfe) {
